@@ -2,9 +2,8 @@ package optim.prime.service;
 
 import optim.prime.algo.PrimeCalculable;
 import optim.prime.algo.SimplePrimeCalculator;
-
-import java.util.List;
-
+import optim.prime.domain.PrimeCalculationResult;
+import optim.prime.domain.RequestStatus;
 
 
 public class SimplePrimeService extends PrimeCalcService {
@@ -21,16 +20,16 @@ public class SimplePrimeService extends PrimeCalcService {
     }
 
     @Override
-    public EvaluationResult<List<Long>> calculate(Long in) {
-        if(isValid(in) == RequestStatus.ERROR) {
-            return EvaluationResult.error(String.format("Supplied: %s, expected value between 0 and %s", in, max));
+    public PrimeCalculationResult calculate(long in) {
+        if (isValid(in) == RequestStatus.ERROR) {
+            return PrimeCalculationResult.error(String.format("Supplied: %s, expected value between 0 and %s", in, max));
         }
-        return EvaluationResult.success(algoImpl.getPrimes(0, in));
+        return PrimeCalculationResult.success(algoImpl.getPrimes(0, in));
     }
 
     @Override
     protected RequestStatus isValid(Long in) {
-        if(in> Integer.MAX_VALUE && in <0) {
+        if (in > max || in < 0) {
             return RequestStatus.ERROR;
         }
         return RequestStatus.SUCCESS;

@@ -2,8 +2,9 @@ package optim.prime.service;
 
 
 import optim.prime.algo.PrimeCalculable;
+import optim.prime.domain.PrimeCalculationResult;
+import optim.prime.domain.RequestStatus;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class AkkaAgentPrimeService extends PrimeCalcService {
@@ -20,7 +21,7 @@ public class AkkaAgentPrimeService extends PrimeCalcService {
     }
 
     @Override
-    public EvaluationResult<List<Long>> calculate(Long in) {
+    public PrimeCalculationResult calculate(long in) {
         return null;
     }
 }

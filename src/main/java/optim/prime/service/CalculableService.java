@@ -1,6 +1,8 @@
 package optim.prime.service;
 
 
-public interface CalculableService<I, O> {
-    EvaluationResult<O> calculate(I in);
+import optim.prime.domain.PrimeCalculationResult;
+
+public interface CalculableService {
+    PrimeCalculationResult calculate(long in);
 }

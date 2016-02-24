@@ -1,10 +1,10 @@
 package optim.prime.rest.controller;
 
 
-import optim.prime.service.EvaluationResult;
+import optim.prime.domain.EvaluationResult;
 import optim.prime.service.PrimeCalcService;
 import optim.prime.service.PrimeRepository;
-import optim.prime.service.RequestStatus;
+import optim.prime.domain.RequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

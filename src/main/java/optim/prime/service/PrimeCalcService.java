@@ -2,10 +2,9 @@ package optim.prime.service;
 
 
 import optim.prime.algo.PrimeCalculable;
+import optim.prime.domain.RequestStatus;
 
-import java.util.List;
-
-public abstract class PrimeCalcService implements CalculableService<Long, List<Long>> {
+public abstract class PrimeCalcService implements CalculableService {
 
     protected final PrimeCalculable algoImpl;
 

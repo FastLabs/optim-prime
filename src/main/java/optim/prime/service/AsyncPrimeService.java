@@ -2,6 +2,8 @@ package optim.prime.service;
 
 
 import optim.prime.algo.PrimeCalculable;
+import optim.prime.domain.PrimeCalculationResult;
+import optim.prime.domain.RequestStatus;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -40,15 +42,15 @@ public class AsyncPrimeService extends PrimeCalcService {
     }
 
     @Override
-    public EvaluationResult<List<Long>> calculate(Long in) {
+    public PrimeCalculationResult calculate(long in) {
         if (isValid(in) != RequestStatus.ERROR) {
             try {
                 q.put(in);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return EvaluationResult.accepted();
+            return PrimeCalculationResult.accepted();
         }
-        return EvaluationResult.error();
+        return PrimeCalculationResult.error();
     }
 }
