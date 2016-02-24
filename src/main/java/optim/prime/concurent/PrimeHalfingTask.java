@@ -1,7 +1,8 @@
 package optim.prime.concurent;
 
 
-import optim.prime.algo.PrimeCalculator;
+import optim.prime.algo.PrimeCalculable;
+import optim.prime.algo.SimplePrimeCalculator1;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,22 +10,29 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.collectingAndThen;
-import static optim.prime.algo.PrimeCalculator.primesFromTo;
 
 public class PrimeHalfingTask extends AbstractHalfingTask<List<Long>> {
 
+
+    private final PrimeCalculable primes;
+
     public PrimeHalfingTask(long to) {
         this(0, to);
+
     }
 
-
-    //TODO: make the algorithm customizable
     public PrimeHalfingTask(long from, long to) {
+        this(from, to, new SimplePrimeCalculator1());
+
+    }
+
+    public PrimeHalfingTask(long from, long to, PrimeCalculable primes) {
         super(from, to);
+        this.primes = primes;
     }
 
     protected List<Long> calculateDirectly(long from, long to) {
-        return primesFromTo(from, to, PrimeCalculator::isPrime1);
+        return primes.getPrimes(from, to);
     }
 
     @Override

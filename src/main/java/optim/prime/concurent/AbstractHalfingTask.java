@@ -30,7 +30,7 @@ public abstract class AbstractHalfingTask<T> extends RecursiveTask<T> {
 
         final AbstractHalfingTask<T> j1 = getInstance(start1, to1);
 
-        final AbstractHalfingTask<T> j2 = getInstance(to1 + 1, to);
+        final AbstractHalfingTask<T> j2 = getInstance(to1 , to);
         j2.fork();
         final T r1 = j1.compute();
         final T r2 = j2.join();

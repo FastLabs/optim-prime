@@ -20,9 +20,5 @@ public interface PrimeCalculable {
 
     }
 
-    boolean isPrime(long value);
-
-    default List<Long> getPrime(Long from, Long to) {
-        return primesFromTo(from, to, this::isPrime);
-    }
+     List<Long> getPrimes(long from, long to);
 }

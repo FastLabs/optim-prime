@@ -1,10 +1,11 @@
 package optim.prime.algo;
 
 
+import java.util.List;
+
 public class SimplePrimeCalculator implements PrimeCalculable {
 
-    @Override
-    public boolean isPrime(long n) {
+    public static boolean isPrime(long n) {
         if (n <= 1) {
             return false;
         }
@@ -18,5 +19,10 @@ public class SimplePrimeCalculator implements PrimeCalculable {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Long> getPrimes(long from, long to) {
+        return PrimeCalculable.primesFromTo(from, to, SimplePrimeCalculator::isPrime);
     }
 }

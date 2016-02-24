@@ -1,19 +1,26 @@
 package optim.prime.rest.controller;
 
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import optim.prime.service.EvaluationResult;
+import optim.prime.service.PrimeCalcService;
+import optim.prime.service.PrimeRepository;
+import optim.prime.service.RequestStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 
 @RestController
 public class OptimPrimeRestController {
 
-    private final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
-
+    @Autowired
+    PrimeCalcService simplePrimeService;
+    @Autowired
+    PrimeRepository primeRepository;
+    @Autowired
+    PrimeCalcService asyncPrimeService;
 
 
     @RequestMapping(value = "/")
@@ -21,9 +28,38 @@ public class OptimPrimeRestController {
         return "Hello World";
     }
 
-    @RequestMapping(value = "/primes/{value}") // this serivce will check the cache
-    List<Long> primes(@PathVariable("value") Long value) {
-        return new ArrayList<Long>();
+    private ResponseEntity<List<Long>> foundPrimes(List<Long> primes) {
+        return new ResponseEntity<>(primes, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/primes/{value}")
+    ResponseEntity<List<Long>> primes(@PathVariable("value") Long value) {
+
+        final List<Long> cached = primeRepository.getPrimes(value);
+        if (cached != null) {
+            return foundPrimes(cached);
+        }
+
+        final EvaluationResult<List<Long>> primes = simplePrimeService.calculate(value);
+
+        if (primes.getRequestStatus() == RequestStatus.ERROR) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);//TODO: fix the http code
+        }
+
+        if (primes.getResult().isPresent()) {
+            foundPrimes(primes.getResult().get());
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "primeLong")
+    public ResponseEntity<String> submitPrimeJob(final @RequestBody Long value) {
+        final EvaluationResult<?> result = asyncPrimeService.calculate(value);
+        if (result.getRequestStatus() == RequestStatus.ACCEPTED) {
+            return new ResponseEntity<>(String.format("prime/%s", value), HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
 }

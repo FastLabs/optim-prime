@@ -1,9 +1,16 @@
 package optim.prime.config;
 
 
+import optim.prime.app.Utils;
+import optim.prime.service.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 @Configuration
 @ComponentScan(basePackages = {"optim.prime.rest.controller"})
@@ -16,4 +23,36 @@ public class AppConfig {
     - maybe some cache sizes if implemented
 
      */
+
+    @Bean
+    ForkJoinPool threadPool() {
+        return ForkJoinPool.commonPool();
+    }
+
+    @Bean
+    PrimeRepository primerepository() {
+        return new PrimeRepository();
+    }
+
+    @Bean
+    PrimeCalcService forkJoinCalcService(ForkJoinPool pool) {
+        return new ForkJoinPrimeService(pool, Utils::stubPrimes);
+    }
+
+    @Bean
+    PrimeCalcService simplePrimeService() {
+        return new SimplePrimeService(Utils::stubPrimes, 100);
+    }
+
+    @Bean
+    PrimeCalcService akkaAgentService(ForkJoinPool pool) {
+        return new AkkaAgentPrimeService(pool, Utils::stubPrimes);
+    }
+
+    @Bean
+    PrimeCalcService asyncPrimeService(ForkJoinPool pool, PrimeRepository repository) {
+        return new AsyncPrimeService(pool, Utils::stubPrimes, repository);
+    }
+
+
 }
