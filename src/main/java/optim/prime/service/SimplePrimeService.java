@@ -14,7 +14,7 @@ public class SimplePrimeService extends PrimeCalcService {
         super(algoImpl);
         this.max = max;
     }
-
+//TODO: do I still need this constructor?
     public SimplePrimeService() {
         this(new SimplePrimeCalculator(), Integer.MAX_VALUE);
     }

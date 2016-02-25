@@ -3,11 +3,17 @@ package optim.prime.service;
 
 import optim.prime.algo.SimplePrimeCalculator1;
 import optim.prime.domain.PrimeCalculationResult;
-import optim.prime.domain.RequestStatus;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
+import static optim.prime.domain.RequestStatus.ERROR;
+import static optim.prime.domain.RequestStatus.SUCCESS;
+import static org.junit.Assert.*;
 
 public class SimplePrimeServiceTest {
 
@@ -16,7 +22,7 @@ public class SimplePrimeServiceTest {
     @Test
     public void testBoundaries() {
         final PrimeCalculationResult primeResult = primeService.calculate(101L);
-        assertEquals(RequestStatus.ERROR, primeResult.getRequestStatus());
+        assertEquals(ERROR, primeResult.getRequestStatus());
         assertNotNull(primeResult.getMessage());
         assertNotNull(primeResult.getResult());
     }
@@ -24,6 +30,26 @@ public class SimplePrimeServiceTest {
     @Test
     public void testZero() {
         final PrimeCalculationResult primeResult =  primeService.calculate(0);
-        assertEquals(RequestStatus.SUCCESS, primeResult.getRequestStatus());
+        assertEquals(SUCCESS, primeResult.getRequestStatus());
+        assertFalse( primeResult.getResult().isPresent());
+    }
+
+    @Test
+    public void testOne() {
+        final PrimeCalculationResult primeResult = primeService.calculate(1);
+        assertEquals(SUCCESS, primeResult.getRequestStatus());
+        assertFalse(primeResult.getResult().isPresent());
+    }
+
+
+
+    @Test
+    public void testOthers() {
+        final List<Long> expected = unmodifiableList( asList(2L, 3L, 5L, 7L));
+        final PrimeCalculationResult primeResult = primeService.calculate(10);
+        assertEquals(SUCCESS, primeResult.getRequestStatus());
+        assertTrue(primeResult.getResult().isPresent());
+
+        assertArrayEquals(expected.toArray(), primeResult.getResult().get().toArray());
     }
 }

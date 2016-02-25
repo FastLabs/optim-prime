@@ -14,8 +14,14 @@ public final class PrimeCalculationResult extends EvaluationResult<List<Long>> {
         return new PrimeCalculationResult(RequestStatus.ERROR, Optional.empty(), message);
     }
 
-    public static PrimeCalculationResult success(List<Long> value) {
-        return new PrimeCalculationResult(RequestStatus.SUCCESS, Optional.ofNullable(value), null);
+    /**
+     * Success for a  list of prime numbers, if the list is null or is empty empty returned
+     * @param values
+     * @return
+     */
+    public static PrimeCalculationResult success(List<Long> values) {
+        final Optional result = values != null && values.size() > 0? Optional.of(values): Optional.empty();
+        return new PrimeCalculationResult(RequestStatus.SUCCESS, result, null);
     }
 
     public static PrimeCalculationResult accepted() {
