@@ -2,20 +2,32 @@ package optim.prime.algo;
 
 
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CachedSievePrimeCalculator extends SievePrimeCalculator {
 
-    private BitSet cache = null;
 
-    protected synchronized BitSet getPrimes(int limit) {
+    final AtomicReference<BitSet> sieve;
 
-        if (cache == null || cache.size() < limit) {
-            cache = super.getPrimes(limit);
+    public CachedSievePrimeCalculator() {
+        this.sieve = new AtomicReference<>(super.getPrimes(1));
+    }
+
+    private BitSet selectOne(BitSet cSieve, BitSet nSieve) {
+        if (cSieve.size() < nSieve.size()) {
+            System.out.println("Excended Sieve" + nSieve.size());
         }
-        return cache.get(0, limit);
+
+        return cSieve.size() > nSieve.size() ? cSieve : nSieve;
+    }
+
+    protected BitSet getPrimes(int limit) {
+        BitSet currentSieve = sieve.get();
+        if (currentSieve.size() < limit) {
+            currentSieve = super.getPrimes(limit);
+            sieve.accumulateAndGet(currentSieve, this::selectOne);
+        }
+        return currentSieve.get(0, limit);
     }
 
 

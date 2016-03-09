@@ -3,6 +3,7 @@ package optim.prime.service;
 
 import optim.prime.algo.PrimeCalculable;
 import optim.prime.domain.PrimeCalculationResult;
+import optim.prime.domain.PrimeRange;
 import optim.prime.domain.RequestStatus;
 
 import java.util.List;
@@ -10,6 +11,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * Asynchronous prime calculator uses a queue to delegate the calculation
+ */
 public class AsyncPrimeService extends PrimeCalcService {
 
     final PrimeRepository primeRepository;
@@ -28,7 +32,9 @@ public class AsyncPrimeService extends PrimeCalcService {
             try {
                 final Long x = q.take();
                 final List<Long> res = algoImpl.getPrimes(0, x);
-                primeRepository.addResult(x, res);
+                if (res != null && res.size() > 0) {
+                    primeRepository.addPrimes(PrimeRange.from(0).to(x), res);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Jopa");
@@ -48,6 +54,7 @@ public class AsyncPrimeService extends PrimeCalcService {
                 q.put(in);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                return PrimeCalculationResult.error();
             }
             return PrimeCalculationResult.accepted();
         }

@@ -29,9 +29,4 @@ public class OptimPrimeRestControllerTest {
         List<Long> x = forkJoinPool.invoke(new PrimeHalfingTask(90));
         System.out.println(x);
     }
-
-
-
-
-
 }
