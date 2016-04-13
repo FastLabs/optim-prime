@@ -6,6 +6,8 @@ import optim.prime.concurent.PrimeHalfingTask;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
+@Deprecated
+//TODO: this logic goes at the service layer
 public class ForkJoinPrimeCalculator extends AbstractPrimeCalculator {
 
     private final ForkJoinPool pool;

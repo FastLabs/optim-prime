@@ -5,7 +5,9 @@ import optim.prime.algo.SimplePrimeCalculator;
 import optim.prime.domain.PrimeCalculationResult;
 import optim.prime.domain.RequestStatus;
 
-
+/**
+ *
+ */
 public class SimplePrimeService extends PrimeCalcService {
 
     private final long max;

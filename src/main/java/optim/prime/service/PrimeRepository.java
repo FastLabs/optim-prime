@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * In memory prime storage.
+ */
+
 public class PrimeRepository {
 
     private Map<PrimeRange, List<Long>> content = new ConcurrentHashMap<>();

@@ -4,6 +4,10 @@ package optim.prime.algo;
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ *
+ */
+
 public class CachedSievePrimeCalculator extends SievePrimeCalculator {
 
 
