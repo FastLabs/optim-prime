@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Sieve prime calculation algorithm
+ * algorithm details: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+ */
 public class SievePrimeCalculator implements PrimeCalculable {
 
 

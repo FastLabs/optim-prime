@@ -3,6 +3,9 @@ package optim.prime.algo;
 
 import java.util.List;
 
+/**
+ * The most naive prime algorithm without any optimisation steps
+ */
 public class SimplePrimeCalculator implements PrimeCalculable {
 
     public static boolean isPrime(long n) {

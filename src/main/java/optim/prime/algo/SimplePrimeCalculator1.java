@@ -2,7 +2,10 @@ package optim.prime.algo;
 
 import java.util.List;
 
-//TODO: review this algorithm
+/**
+ * A simple prime checking algorithm
+ * https://en.wikipedia.org/wiki/Primality_test
+ */
 public class SimplePrimeCalculator1 implements PrimeCalculable {
 
     boolean isPrime(long n) {

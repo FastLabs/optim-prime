@@ -49,4 +49,12 @@ public class OptimPrimeRestControllerTest {
     }
 
 
+    @Test
+    public void forkJoinTest() {
+        final ResponseEntity<List> result = rest.getForEntity(String.format("%s/primes/fork/10", url), List.class);
+        assertNull(result.getHeaders().getCacheControl());
+        assertArrayEquals(new Integer[]{2, 3, 5, 7}, result.getBody().toArray());
+    }
+
+
 }

@@ -1,15 +1,19 @@
 package optim.prime.algo;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- *
+ * Extends the original sieve prime calculator by adding sieve cache
  */
 
 public class CachedSievePrimeCalculator extends SievePrimeCalculator {
 
+    private static final Log logger = LogFactory.getLog(CachedSievePrimeCalculator.class);
 
     final AtomicReference<BitSet> sieve;
 
@@ -19,7 +23,7 @@ public class CachedSievePrimeCalculator extends SievePrimeCalculator {
 
     private BitSet selectOne(BitSet cSieve, BitSet nSieve) {
         if (cSieve.size() < nSieve.size()) {
-            System.out.println("Excended Sieve" + nSieve.size());
+            logger.warn("Exceeded Sieve" + nSieve.size());
         }
 
         return cSieve.size() > nSieve.size() ? cSieve : nSieve;

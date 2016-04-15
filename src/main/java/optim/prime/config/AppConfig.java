@@ -1,6 +1,7 @@
 package optim.prime.config;
 
 
+import optim.prime.algo.SievePrimeCalculator;
 import optim.prime.algo.SimplePrimeCalculator1;
 import optim.prime.app.Utils;
 import optim.prime.service.*;
@@ -35,7 +36,7 @@ public class AppConfig {
 
     @Bean
     PrimeCalcService forkJoinCalcService(ForkJoinPool pool) {
-        return new ForkJoinPrimeService(pool, Utils::stubPrimes);
+        return new ForkJoinPrimeService(pool, new SievePrimeCalculator());
     }
 
     @Bean
