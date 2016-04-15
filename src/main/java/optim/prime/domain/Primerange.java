@@ -1,6 +1,8 @@
 package optim.prime.domain;
 
-
+/**
+ * Prime range request
+ */
 public final class PrimeRange {
 
     public final long from;

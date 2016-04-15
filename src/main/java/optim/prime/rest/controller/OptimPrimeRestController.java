@@ -2,18 +2,28 @@ package optim.prime.rest.controller;
 
 
 import optim.prime.domain.EvaluationResult;
+import optim.prime.domain.PrimeRange;
 import optim.prime.service.PrimeCalcService;
 import optim.prime.service.PrimeRepository;
-import optim.prime.domain.RequestStatus;
+import optim.prime.domain.EvaluationStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 public class OptimPrimeRestController {
+
+    private static final Log logger = LogFactory.getLog(OptimPrimeRestController.class);
 
     @Autowired
     PrimeCalcService simplePrimeService;
@@ -22,41 +32,59 @@ public class OptimPrimeRestController {
     @Autowired
     PrimeCalcService asyncPrimeService;
 
+    @Autowired
+    PrimeCalcService forkJoinCalcService;
 
-    @RequestMapping(value = "/")
-    String home() {
-        return "Hello World";
-    }
 
     private ResponseEntity<List<Long>> foundPrimes(List<Long> primes) {
-        return new ResponseEntity<>(primes, HttpStatus.OK);
+
+        return  ResponseEntity.ok(primes);
     }
 
-    @RequestMapping(value = "/primes/{value}")
+    private ResponseEntity<List<Long>> foundPrimesFromCache(List<Long> primes) {
+
+        return  ResponseEntity.status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.HOURS))
+                .body(primes);
+    }
+
+
+
+    @RequestMapping(method = GET,  value = "/primes/{value}")
     ResponseEntity<List<Long>> primes(@PathVariable("value") Long value) {
+
+        logger.info(String.format("Prime Range requested for %s", value));
 
         final List<Long> cached = primeRepository.getPrimes(value);
         if (cached != null) {
-            return foundPrimes(cached);
+            if(logger.isDebugEnabled()) {
+                logger.debug(String.format("Matched a calculated value from cache for :%s", value));
+            }
+            return foundPrimesFromCache(cached);
         }
 
         final EvaluationResult<List<Long>> primes = simplePrimeService.calculate(value);
 
-        if (primes.getRequestStatus() == RequestStatus.ERROR) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);//TODO: fix the http code
+        if (primes.getEvaluationStatus() == EvaluationStatus.ERROR) {
+            //maybe a redirect is required, but at the moment there is no other get resources
+            logger.error("Prime could not be evaluated by the default algorithm, check other implementations");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         if (primes.getResult().isPresent()) {
-            foundPrimes(primes.getResult().get());
+            primeRepository.addPrimes(PrimeRange.from(0).to(value), primes.getResult().get());
+            //TODO: maybe some cache headers, but i don't hav time
+           return foundPrimes(primes.getResult().get());
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "primeLong")
+    @RequestMapping(method = POST, path = "primes")
     public ResponseEntity<String> submitPrimeJob(final @RequestBody Long value) {
+
         final EvaluationResult<?> result = asyncPrimeService.calculate(value);
-        if (result.getRequestStatus() == RequestStatus.ACCEPTED) {
+        if (result.getEvaluationStatus() == EvaluationStatus.ACCEPTED) {
             return new ResponseEntity<>(String.format("prime/%s", value), HttpStatus.ACCEPTED);
         }
         return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);

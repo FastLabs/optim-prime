@@ -1,6 +1,7 @@
 package optim.prime.config;
 
 
+import optim.prime.algo.SimplePrimeCalculator1;
 import optim.prime.app.Utils;
 import optim.prime.service.*;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -8,8 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 @Configuration
@@ -41,7 +40,7 @@ public class AppConfig {
 
     @Bean
     PrimeCalcService simplePrimeService() {
-        return new SimplePrimeService(Utils::stubPrimes, 100);
+        return new SimplePrimeService();
     }
 
     @Bean
@@ -51,7 +50,7 @@ public class AppConfig {
 
     @Bean
     PrimeCalcService asyncPrimeService(ForkJoinPool pool, PrimeRepository repository) {
-        return new AsyncPrimeService(pool, Utils::stubPrimes, repository);
+        return new AsyncPrimeService(pool, new SimplePrimeCalculator1(), repository);
     }
 
 

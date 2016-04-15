@@ -3,12 +3,18 @@ package optim.prime.service;
 import optim.prime.algo.PrimeCalculable;
 import optim.prime.algo.SimplePrimeCalculator;
 import optim.prime.domain.PrimeCalculationResult;
-import optim.prime.domain.RequestStatus;
+import optim.prime.domain.EvaluationStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.List;
 
 /**
  *
  */
 public class SimplePrimeService extends PrimeCalcService {
+
+    private static final Log logger = LogFactory.getLog(SimplePrimeService.class);
 
     private final long max;
 
@@ -16,24 +22,27 @@ public class SimplePrimeService extends PrimeCalcService {
         super(algoImpl);
         this.max = max;
     }
-//TODO: do I still need this constructor?
+
     public SimplePrimeService() {
         this(new SimplePrimeCalculator(), Integer.MAX_VALUE);
     }
 
     @Override
     public PrimeCalculationResult calculate(long in) {
-        if (isValid(in) == RequestStatus.ERROR) {
+        logger.info("Eager prime calculation started");
+        if (isValid(in) == EvaluationStatus.ERROR) {
             return PrimeCalculationResult.error(String.format("Supplied: %s, expected value between 0 and %s", in, max));
         }
-        return PrimeCalculationResult.success(algoImpl.getPrimes(0, in));
+        final List<Long> x = algoImpl.getPrimes(0, in);
+        logger.info(String.format("Eager prime calculation completed. Found %s primes", x.size()));
+        return PrimeCalculationResult.success(x);
     }
 
     @Override
-    protected RequestStatus isValid(Long in) {
+    protected EvaluationStatus isValid(Long in) {
         if (in > max || in < 0) {
-            return RequestStatus.ERROR;
+            return EvaluationStatus.ERROR;
         }
-        return RequestStatus.SUCCESS;
+        return EvaluationStatus.SUCCESS;
     }
 }

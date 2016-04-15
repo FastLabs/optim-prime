@@ -2,7 +2,7 @@ package optim.prime.service;
 
 
 import optim.prime.algo.PrimeCalculable;
-import optim.prime.domain.RequestStatus;
+import optim.prime.domain.EvaluationStatus;
 
 /**
  * Abstract class for the services that evaluates primes based on
@@ -20,6 +20,6 @@ public abstract class PrimeCalcService implements CalculableService {
      * @param in
      * @return
      */
-    protected abstract RequestStatus isValid(Long in);
+    protected abstract EvaluationStatus isValid(Long in);
 
 }

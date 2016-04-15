@@ -1,9 +1,13 @@
 package optim.prime.concurent;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.util.concurrent.RecursiveTask;
 
 
 public abstract class AbstractHalfingTask<T> extends RecursiveTask<T> {
+    private static final Log logger = LogFactory.getLog(AbstractHalfingTask.class);
 
     protected final long to;
     protected final long from;
@@ -21,7 +25,11 @@ public abstract class AbstractHalfingTask<T> extends RecursiveTask<T> {
 
     @Override
     protected T compute() {
-        System.out.println(Thread.currentThread().getName());
+
+        if(logger.isTraceEnabled()) {
+            System.out.println(Thread.currentThread().getName());
+        }
+
         if (to - from <= 10) {
             return calculateDirectly(from, to);
         }
@@ -34,7 +42,6 @@ public abstract class AbstractHalfingTask<T> extends RecursiveTask<T> {
         j2.fork();
         final T r1 = j1.compute();
         final T r2 = j2.join();
-
 
         return merge(r1, r2);
     }

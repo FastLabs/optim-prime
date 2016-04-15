@@ -11,7 +11,7 @@ public final class PrimeCalculationResult extends EvaluationResult<List<Long>> {
     }
 
     public static PrimeCalculationResult error(String message) {
-        return new PrimeCalculationResult(RequestStatus.ERROR, Optional.empty(), message);
+        return new PrimeCalculationResult(EvaluationStatus.ERROR, Optional.empty(), message);
     }
 
     /**
@@ -21,14 +21,14 @@ public final class PrimeCalculationResult extends EvaluationResult<List<Long>> {
      */
     public static PrimeCalculationResult success(List<Long> values) {
         final Optional result = values != null && values.size() > 0? Optional.of(values): Optional.empty();
-        return new PrimeCalculationResult(RequestStatus.SUCCESS, result, null);
+        return new PrimeCalculationResult(EvaluationStatus.SUCCESS, result, null);
     }
 
     public static PrimeCalculationResult accepted() {
-        return new PrimeCalculationResult(RequestStatus.ACCEPTED, Optional.empty(), null);
+        return new PrimeCalculationResult(EvaluationStatus.ACCEPTED, Optional.empty(), null);
     }
 
-    public PrimeCalculationResult(RequestStatus requestStatus, Optional<List<Long>> result, String message) {
-        super(requestStatus, result, message);
+    public PrimeCalculationResult(EvaluationStatus evaluationStatus, Optional<List<Long>> result, String message) {
+        super(evaluationStatus, result, message);
     }
 }

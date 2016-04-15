@@ -3,7 +3,7 @@ package optim.prime.service;
 
 import optim.prime.algo.PrimeCalculable;
 import optim.prime.domain.PrimeCalculationResult;
-import optim.prime.domain.RequestStatus;
+import optim.prime.domain.EvaluationStatus;
 
 import java.util.concurrent.ExecutorService;
 
@@ -18,7 +18,7 @@ public class AkkaAgentPrimeService extends PrimeCalcService {
     }
 
     @Override
-    protected RequestStatus isValid(Long in) {
+    protected EvaluationStatus isValid(Long in) {
         return null;
     }
 

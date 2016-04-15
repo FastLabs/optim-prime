@@ -4,22 +4,22 @@ package optim.prime.domain;
 import java.util.Optional;
 
 public class EvaluationResult<O> {
-    private final RequestStatus requestStatus;
+    private final EvaluationStatus evaluationStatus;
     private final Optional<O> result;
     private final String message;
 
 
 
 
-    public EvaluationResult(RequestStatus requestStatus, Optional<O> result, String message) {
-        this.requestStatus = requestStatus;
+    public EvaluationResult(EvaluationStatus evaluationStatus, Optional<O> result, String message) {
+        this.evaluationStatus = evaluationStatus;
         this.result = result;
         this.message = message;
     }
 
 
-    public RequestStatus getRequestStatus() {
-        return requestStatus;
+    public EvaluationStatus getEvaluationStatus() {
+        return evaluationStatus;
     }
 
     public Optional<O> getResult() {

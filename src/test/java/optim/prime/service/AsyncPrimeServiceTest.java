@@ -4,7 +4,6 @@ package optim.prime.service;
 import optim.prime.algo.SimplePrimeCalculator1;
 import optim.prime.domain.PrimeCalculationResult;
 import optim.prime.domain.PrimeRange;
-import optim.prime.utils.SomeExpectations;
 import optim.prime.utils.StubPrimeRepository;
 import org.junit.Test;
 
@@ -13,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static optim.prime.domain.RequestStatus.ACCEPTED;
+import static optim.prime.domain.EvaluationStatus.ACCEPTED;
 import static optim.prime.utils.SomeExpectations.expected10;
 import static optim.prime.utils.SomeExpectations.expected20;
 import static org.junit.Assert.assertArrayEquals;
@@ -27,7 +26,7 @@ public class AsyncPrimeServiceTest {
     @Test
     public void testZero() {
         final PrimeCalculationResult primeResult = primeService.calculate(0);
-        assertEquals(ACCEPTED, primeResult.getRequestStatus());
+        assertEquals(ACCEPTED, primeResult.getEvaluationStatus());
     }
 
 
@@ -36,7 +35,7 @@ public class AsyncPrimeServiceTest {
         repository.setAddLatch(1);
         repository.setGetLatch(1);
         final PrimeCalculationResult primeResult = primeService.calculate(10);
-        assertEquals(ACCEPTED, primeResult.getRequestStatus());
+        assertEquals(ACCEPTED, primeResult.getEvaluationStatus());
         repository.addLatch.await();
         final List<Long> tenPrimes = repository.getPrimes(PrimeRange.from(0).to(10));
         assertEquals(0, repository.getLatch.getCount());
@@ -49,8 +48,8 @@ public class AsyncPrimeServiceTest {
         repository.setGetLatch(2);
         final PrimeCalculationResult primeResult = primeService.calculate(10);
         final PrimeCalculationResult primeResult2 = primeService.calculate(20);
-        assertEquals(ACCEPTED, primeResult.getRequestStatus());
-        assertEquals(ACCEPTED, primeResult2.getRequestStatus());
+        assertEquals(ACCEPTED, primeResult.getEvaluationStatus());
+        assertEquals(ACCEPTED, primeResult2.getEvaluationStatus());
         repository.addLatch.await(2, TimeUnit.SECONDS);
         final List<Long> tenPrimes = repository.getPrimes(PrimeRange.from(0).to(10));
         final List<Long> twentyPrimes = repository.getPrimes(PrimeRange.from(0).to(20));

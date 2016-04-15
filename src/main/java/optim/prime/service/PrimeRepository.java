@@ -2,6 +2,8 @@ package optim.prime.service;
 
 
 import optim.prime.domain.PrimeRange;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 public class PrimeRepository {
+
+    private static final Log logger = LogFactory.getLog(PrimeRepository.class);
 
     private Map<PrimeRange, List<Long>> content = new ConcurrentHashMap<>();
 
@@ -29,7 +33,11 @@ public class PrimeRepository {
     }
 
     public void addPrimes(PrimeRange value, List<Long> values) {
+        if (logger.isDebugEnabled()) {
+            logger.debug(String.format("Prime range %s stored in cache", value));
+        }
         content.put(value, values);
+
     }
 
     public void addPrimes(PrimeRange.Builder builder, List<Long> values) {
