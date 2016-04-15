@@ -44,11 +44,6 @@ public class AppConfig {
     }
 
     @Bean
-    PrimeCalcService akkaAgentService(ForkJoinPool pool) {
-        return new AkkaAgentPrimeService(pool, Utils::stubPrimes);
-    }
-
-    @Bean
     PrimeCalcService asyncPrimeService(ForkJoinPool pool, PrimeRepository repository) {
         return new AsyncPrimeService(pool, new SimplePrimeCalculator1(), repository);
     }

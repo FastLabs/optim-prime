@@ -73,7 +73,6 @@ public class OptimPrimeRestController {
 
         if (primes.getResult().isPresent()) {
             primeRepository.addPrimes(PrimeRange.from(0).to(value), primes.getResult().get());
-            //TODO: maybe some cache headers, but i don't hav time
            return foundPrimes(primes.getResult().get());
         }
 
